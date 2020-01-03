@@ -27,7 +27,7 @@ public class PageRender<T> {
 
 		int desde, hasta;
 
-		if (totalPaginas >= numElementosPorPagina) {
+		if (totalPaginas <= numElementosPorPagina) {
 			desde = 1;
 			hasta = totalPaginas;
 		} else {
@@ -44,7 +44,7 @@ public class PageRender<T> {
 		}
 
 		for (int i = 0; i < hasta; i++) {
-			paginas.add(new PageItem(desde + i, paginaActual == desde + 1));
+			paginas.add(new PageItem(desde + i, paginaActual == desde +i));
 		}
 	}
 
@@ -64,7 +64,7 @@ public class PageRender<T> {
 		return paginas;
 	}
 	
-	public boolean isFirs() {
+	public boolean isFirst() {
 		return page.isFirst();
 	}
 	
