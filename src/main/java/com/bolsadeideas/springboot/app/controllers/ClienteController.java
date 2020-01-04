@@ -1,5 +1,6 @@
 package com.bolsadeideas.springboot.app.controllers;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -42,6 +43,8 @@ import com.bolsadeideas.springboot.app.util.paginator.PageRender;
 @SessionAttributes("cliente")
 public class ClienteController {
 	
+	private static final String UPLOADS_FOLDER = "uploads";
+
 	@Autowired
 	private IClienteService clienteServ;
 	
@@ -49,7 +52,7 @@ public class ClienteController {
 	
 	@GetMapping(value = "/uploads/{filename:.+}")
 	public ResponseEntity<Resource> verFoto(@PathVariable String filename){
-		Path pathFoto = Paths.get("uploads").resolve(filename);
+		Path pathFoto = Paths.get(UPLOADS_FOLDER).resolve(filename);
 		log.info("pathFoto: "+ pathFoto);
 		
 		Resource recurso = null;
@@ -137,8 +140,18 @@ public class ClienteController {
 		
 		if(!foto.isEmpty()) {
 			
+			if(cliente.getId() !=null && cliente.getId() > 0 && cliente.getFoto() !=null && cliente.getFoto().length() > 0) {
+
+				Path rootPath = Paths.get(UPLOADS_FOLDER).resolve(cliente.getFoto());
+				File archivo = rootPath.toFile();
+				
+				if(archivo.exists() && archivo.canRead()) {
+					archivo.delete();
+				}
+			}
+			
 			String uniqueFilename = UUID.randomUUID() + "_" + foto.getOriginalFilename();
-			Path rootPath = Paths.get("uploads").resolve(uniqueFilename);
+			Path rootPath = Paths.get(UPLOADS_FOLDER).resolve(uniqueFilename);
 			
 			Path rootAbsolutPath = rootPath.toAbsolutePath();
 			
@@ -168,8 +181,19 @@ public class ClienteController {
 	public String eliminar(@PathVariable(value = "id") Long id, RedirectAttributes flash) {
 		
 		if(id>0) {
+			Cliente cliente = clienteServ.findOne(id);
+			
 			clienteServ.delete(id);
 			flash.addFlashAttribute("success", "Cliente eliminado con éxito!");
+			
+			Path rootPath = Paths.get(UPLOADS_FOLDER).resolve(cliente.getFoto());
+			File archivo = rootPath.toFile();
+			
+			if(archivo.exists() && archivo.canRead()) {
+				if(archivo.delete()) {
+					flash.addFlashAttribute("info", "Foto " + cliente.getFoto() + " eliminado con exito!");
+				}
+			}
 		}
 		
 		return "redirect:/listar";
