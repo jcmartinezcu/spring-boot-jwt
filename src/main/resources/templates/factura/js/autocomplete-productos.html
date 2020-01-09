@@ -47,6 +47,11 @@
 				}
 
 			});
+			
+			$("form").submit(function(){
+				$("#plantillaItemsFactura").remove();
+				return;
+			});
 		});
 		
 		var itemsHelper = {
