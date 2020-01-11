@@ -44,6 +44,12 @@ public class ClienteServiceImp implements IClienteService {
 	public Cliente findOne(Long id) {
 		return clienteDao.findById(id).orElse(null);
 	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public Cliente fetchByIdwitchFacturas(Long id) {
+		return clienteDao.fetchByIdwitchFacturas(id);
+	}
 
 	@Override
 	@Transactional
@@ -94,5 +100,7 @@ public class ClienteServiceImp implements IClienteService {
 	public Factura fetchFacturaByIddwithClientewithItemFacturawithProducto(Long id) {
 		return facturaDao.fetchByIdwithClientewithItemFacturawithProducto(id);
 	}
+
+
 
 }
