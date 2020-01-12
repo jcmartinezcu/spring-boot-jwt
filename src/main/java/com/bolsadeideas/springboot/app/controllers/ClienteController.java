@@ -5,6 +5,7 @@ import java.net.MalformedURLException;
 import java.util.Collection;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -21,6 +22,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -84,7 +86,8 @@ public class ClienteController {
 
 	@RequestMapping(value = {"/listar", "/"}, method = RequestMethod.GET)
 	public String listar(@RequestParam(name = "page", defaultValue = "0") int page, Model model,
-			Authentication authentication) {
+			Authentication authentication,
+			HttpServletRequest request) {
 		
 		if(authentication != null) {
 			log.info("Hola usuario autenticado, tu username es: ".concat(authentication.getName()));
@@ -103,6 +106,22 @@ public class ClienteController {
 			log.info("Hola ".concat(auth.getName()).concat(" No tienes acceso!"));
 		}
 
+		SecurityContextHolderAwareRequestWrapper securityContext = new SecurityContextHolderAwareRequestWrapper(request, "ROLE_");
+		
+		if(securityContext.isUserInRole("ADMIN")) {
+			log.info("Forma usando SecurityContextHolderAwareRequestWrapper: Hola ".concat(auth.getName()).concat(" tienes acceso!"));
+		}
+		else {
+			log.info("Forma usando SecurityContextHolderAwareRequestWrapper: Hola ".concat(auth.getName()).concat(" NO tienes acceso!"));
+		}
+		
+		if(request.isUserInRole("ROLE_ADMIN")) {
+			log.info("Forma usando request: Hola ".concat(auth.getName()).concat(" tienes acceso!"));
+		}
+		else {
+			log.info("Forma usando request: Hola ".concat(auth.getName()).concat(" NO tienes acceso!"));
+		}
+		
 		Pageable pageRequest = PageRequest.of(page, 4);
 		Page<Cliente> clientes = clienteServ.findAll(pageRequest);
 
