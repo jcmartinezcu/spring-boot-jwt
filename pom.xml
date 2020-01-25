@@ -9,10 +9,10 @@
 		<version>2.2.2.RELEASE</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.bolsadeideas.springboot.datajpa.app</groupId>
-	<artifactId>Spring-boot-data-jpa</artifactId>
+	<groupId>com.bolsadeideas.springboot.jwt.app</groupId>
+	<artifactId>Spring-boot-jwt</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Spring-boot-data-jpa</name>
+	<name>Spring-boot-jwt</name>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
@@ -109,6 +109,11 @@
 			<artifactId>jaxb-runtime</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.9.1</version>
+		</dependency>
 
 
 	</dependencies>
