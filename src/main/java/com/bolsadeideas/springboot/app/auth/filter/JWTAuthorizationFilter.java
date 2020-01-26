@@ -10,6 +10,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
 	public JWTAuthorizationFilter(AuthenticationManager authenticationManager) {
@@ -25,6 +29,21 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 		if (!requiresAuthentication(header)) {
 			chain.doFilter(request, response);
 			return;
+		}
+
+		boolean validoToken; 
+		Claims token =  null;
+		try {
+			token = Jwts.parser().setSigningKey("Alguna.Clave.Secreta.123456".getBytes())
+					.parseClaimsJws(header.replace("Bearer ", "")).getBody();
+			validoToken = true;
+			
+		} catch (JwtException | IllegalArgumentException e) {
+			validoToken = false;
+		}
+		
+		if(validoToken) {
+			
 		}
 
 	}
